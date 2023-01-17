@@ -1,0 +1,15 @@
+================================================================================
+Insert prefix on commit message                             *commit-prefix.nvim*
+
+M.setup({config})                                     *commit-prefix.nvim.setup*
+
+    Parameters: ~
+        {config}  (table)  user config
+
+    Usage: ~
+        >
+
+        <
+
+
+vim:tw=78:ts=8:noet:ft=help:norl:
