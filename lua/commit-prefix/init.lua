@@ -21,6 +21,10 @@ end
 
 ---@param config table user config
 ---@usage [[
+---require('commit-prefix').setup {
+---    prefix_match = '%w+-%d+', -- JIRA ticket (PRJ-1234), for more info about matching: https://www.lua.org/pil/20.2.html
+---    enter_insert_mode = true, -- Enter insert mode
+---}
 ---@usage ]]
 M.setup = function(config)
     config = config or {}
