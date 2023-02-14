@@ -8,6 +8,17 @@ local default_config = {
     enter_insert_mode = true, -- Enter insert mode
 }
 
+local function is_gitcommit(buf)
+    return api.nvim_buf_get_option(buf, 'filetype') == 'gitcommit'
+end
+
+local function get_branch(buf)
+    local on_branch_line_index = vim.fn.search('# On branch', 'n')
+    local on_branch = api.nvim_buf_get_lines(buf, on_branch_line_index - 1, on_branch_line_index, true)[1]
+
+    return string.gsub(on_branch, '# On branch', '')
+end
+
 ---@param config table user config
 ---@usage [[
 ---@usage ]]
@@ -17,8 +28,7 @@ M.setup = function(config)
 
     api.nvim_create_autocmd('BufWinEnter', {
         callback = function(events)
-            local ft = api.nvim_buf_get_option(events.buf, 'filetype')
-            if ft ~= 'gitcommit' then
+            if not is_gitcommit(events.buf) then
                 return
             end
 
@@ -27,19 +37,41 @@ M.setup = function(config)
                 return -- Dont insert prefix to commits with text (amend)
             end
 
-            local on_branch_line_index = vim.fn.search('# On branch', 'n')
-            local on_branch = api.nvim_buf_get_lines(events.buf, on_branch_line_index - 1, on_branch_line_index, true)
-                [1]
-            local branch = string.gsub(on_branch, '# On branch', '')
-            local ticket_num = branch:match(config.prefix_match)
-
-            if ticket_num then
-                api.nvim_buf_set_lines(events.buf, 0, 1, true, { ticket_num .. ' ' })
+            local branch = get_branch(events.buf)
+            local prefix = branch:match(config.prefix_match)
+            if prefix then
+                api.nvim_buf_set_lines(events.buf, 0, 1, true, { prefix .. ' ' })
             end
 
             if config.enter_insert_mode then
                 -- Enter insert mode at EOL
                 api.nvim_feedkeys('A', 'n', false)
+            end
+        end
+    })
+
+    -- Abort saving empty commit messages
+    api.nvim_create_autocmd('BufUnload', {
+        callback = function(events)
+            if not events.buf then
+                return
+            end
+
+            if not is_gitcommit(events.buf) then
+                return
+            end
+
+            local branch = get_branch(events.buf)
+            local prefix = branch:match(config.prefix_match)
+            if prefix then
+                api.nvim_buf_set_lines(events.buf, 0, 1, true, { prefix .. ' ' })
+            end
+
+            -- If the commit line contains only the prefix, remove all the text to abort the commit
+            local first_line = api.nvim_buf_get_lines(events.buf, 0, 1, true)[1]
+            if first_line == prefix .. ' ' then
+                api.nvim_buf_set_lines(events.buf, 0, 1, true, { '' })
+                vim.cmd("silent! write")
             end
         end
     })
