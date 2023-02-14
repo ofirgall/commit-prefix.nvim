@@ -1,4 +1,4 @@
-================================================================================
+==============================================================================
 Insert prefix on commit message                             *commit-prefix.nvim*
 
 M.setup({config})                                     *commit-prefix.nvim.setup*
@@ -7,12 +7,12 @@ M.setup({config})                                     *commit-prefix.nvim.setup*
         {config}  (table)  user config
 
     Usage: ~
-        >
-            require('commit-prefix').setup {
-                prefix_match = '%w+-%d+', -- JIRA ticket (PRJ-1234), for more info about matching: https://www.lua.org/pil/20.2.html
-                enter_insert_mode = true, -- Enter insert mode
-            }
-        <
+>lua
+        require('commit-prefix').setup {
+            prefix_match = '%w+-%d+', -- JIRA ticket (PRJ-1234), for more info about matching: https://www.lua.org/pil/20.2.html
+            enter_insert_mode = true, -- Enter insert mode
+        }
+<
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
