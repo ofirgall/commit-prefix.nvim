@@ -67,8 +67,8 @@ M.setup = function(config)
 
             local branch = get_branch(events.buf)
             local prefix = branch:match(config.prefix_match)
-            if prefix then
-                api.nvim_buf_set_lines(events.buf, 0, 1, true, { prefix .. ' ' })
+            if not prefix then
+                return
             end
 
             -- If the commit line contains only the prefix, remove all the text to abort the commit
