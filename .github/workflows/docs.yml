@@ -8,6 +8,8 @@ env:
 jobs:
   docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     name: emmylua to vimdoc
     steps:
       - uses: actions/checkout@v2
