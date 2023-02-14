@@ -8,7 +8,10 @@ M.setup({config})                                     *commit-prefix.nvim.setup*
 
     Usage: ~
         >
-
+            require('commit-prefix').setup {
+                prefix_match = '%w+-%d+', -- JIRA ticket (PRJ-1234), for more info about matching: https://www.lua.org/pil/20.2.html
+                enter_insert_mode = true, -- Enter insert mode
+            }
         <
 
 
