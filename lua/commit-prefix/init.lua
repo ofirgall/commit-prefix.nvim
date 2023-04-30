@@ -14,6 +14,9 @@ end
 
 local function get_branch(buf)
     local on_branch_line_index = vim.fn.search('# On branch', 'n')
+    if on_branch_line_index == 0 then
+        return nil
+    end
     local on_branch = api.nvim_buf_get_lines(buf, on_branch_line_index - 1, on_branch_line_index, true)[1]
 
     return string.gsub(on_branch, '# On branch', '')
@@ -66,6 +69,9 @@ M.setup = function(config)
             end
 
             local branch = get_branch(events.buf)
+            if branch == nil then
+                return
+            end
             local prefix = branch:match(config.prefix_match)
             if not prefix then
                 return
