@@ -52,7 +52,9 @@ M.setup = function(config)
 
             if config.enter_insert_mode then
                 -- Enter insert mode at EOL
-                api.nvim_feedkeys('A', 'n', false)
+                vim.schedule(function ()
+                    api.nvim_feedkeys('A', 'n', false)
+                end)
             end
         end
     })
